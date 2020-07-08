@@ -1,0 +1,16 @@
+{
+  "name": "shipkeebot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "shipkeeBot.js",
+  "scripts": {
+    "test": "node test.js",
+    "start": "node server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "puppeteer": "^4.0.1"
+  }
+}

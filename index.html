@@ -1,0 +1,68 @@
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/TableExport/3.3.5/js/tableexport.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+<body class="m-5">
+
+  <div ng-app="myApp">
+
+    <div ng-controller="myCtrl1" ng-cloak>
+
+
+      <div class="mt-2"></div>
+
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-sm">
+            Order #
+            <input ng-model="orderNumber" autocomplete="on" type="text" class="form-control">
+          </div>
+          <div class="col-sm">
+            Weight
+            <input ng-model="weight" autocomplete="on" type="text" class="form-control">
+          </div>
+          <div class="col-sm">
+            Value
+            <input ng-model="value" autocomplete="on" type="text" class="form-control">
+          </div>
+          <div class="col-sm">
+            Width
+            <input ng-model="width" autocomplete="on" type="text" class="form-control">
+          </div>
+          <div class="col-sm">
+            Height
+            <input ng-model="height" autocomplete="on" type="text" class="form-control">
+          </div>
+          <div class="col-sm">
+            Length
+            <input ng-model="length" autocomplete="on" type="text" class="form-control">
+          </div>
+          <div class="col-sm mt-4">
+            <button ng-show="showGetLabel" type="button" class="btn btn-primary" ng-click="getLabel()">Get
+              Label</button>
+            <button ng-show="showErrorButton" class="btn btn-danger" type="button" disabled>Error </button>
+            <button ng-show="showLoading" class="btn btn-primary" type="button" disabled>
+              <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+              Loading...
+            </button>
+            <button ng-show="showSentButton" class="btn btn-success" type="button">Processed</button>
+          </div>
+
+        </div>
+      </div>
+
+      {{length}}
+      {{weight}}
+      {{height}}
+
+    </div>
+  </div>
+  </div>
+</body>
+<script src="./myCtrl1.js" type="text/javascript"></script>
+
+</html>
