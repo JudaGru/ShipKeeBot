@@ -1,0 +1,303 @@
+<aura:component controller="FamilyTreeController" implements="lightning:isUrlAddressable,force:appHostable,force:hasRecordId,lightning:actionOverride,force:lightningQuickActionWithoutHeader,flexipage:availableForRecordHome,flexipage:availableForAllPageTypes,forceCommunity:availableForAllPageTypes,lightning:hasPageReference" access="global">
+    
+<aura:attribute name="family" type="Object" />
+    <aura:attribute name="errorFetchingData" type="Boolean" />
+    <aura:attribute name="showExpandButton" type="Boolean" default="true"/>
+    <aura:attribute name="recordId" type="string" />
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler event="force:showToast" action="{!c.toastInfo}" />
+    <aura:handler event="force:refreshView" action="{!c.doInit}" />
+
+    
+    <div class="slds slds-box">
+        <aura:if isTrue="{! !v.errorFetchingData}">
+        <div class="slds-grid slds-gutters slds-p-top_small" style="font-size: 0.7rem;text-align: -webkit-center;">
+            <div class="slds-col slds-size_3-of-12" style="font-size: 0.9rem;text-align: initial;">
+                <ul class="slds-p-left_x-large">
+                    <li>
+                        <lightning:icon iconName="utility:education" size="x-small" class="slds-m-top_x-small" />
+                        Student
+                    </li>
+                    <li>
+                        <lightning:icon iconName="utility:home" size="x-small" class="slds-m-top_x-small" />
+                        Homemaker
+                    </li>
+                    <li>
+                        <lightning:icon iconName="utility:case" size="x-small" class="slds-m-top_x-small" />
+                        Work
+                    </li>
+                    <li>
+                        <lightning:icon iconName="utility:warning" size="x-small" class="slds-m-top_x-small" />
+                        Special Needs
+                    </li>
+                    <li>
+                        <lightning:icon iconName="utility:world" size="x-small" class="slds-m-top_x-small" />
+                        Location
+                    </li>
+                </ul>
+
+
+            </div>
+
+            <div class="slds-col slds-size_2-of-12">
+                <aura:if isTrue="{! !empty(v.family.clientLineageLink)}">
+                    <lightning:tile label="" class="slds-box custom-tile">
+                        <div class="slds-text-align_center">
+                            <lightning:icon iconName="utility:agent_home" size="xx-small" class="slds-m-right_xx-small" />
+                            <a href="{!v.family.clientLineageLink}" title="{!v.family.clientLineageName}">
+                                <span style="font-size: 0.6rem;"> {!v.family.clientLineageName}</span>
+                            </a>
+                        </div>
+                        <ul class="slds-has-dividers_right">
+                            <li class="">
+                                <a href="{!v.family.clientFatherLink}" title="{!v.family.clientFatherName}">
+                                    <lightning:badge label="{!v.family.clientFatherName}" class="customBadge" iconName="utility:success" style="{! v.family.clientFatherGender == 'Female' ? 'background-color:#e7d6ba;' : 'background-color:#bdd7ee;' }" />
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="{!v.family.clientMotherLink}" title="{!v.family.clientMotherName}">
+                                    <lightning:badge label="{!v.family.clientMotherName}" class="customBadge" iconName="utility:success" style="{! v.family.clientMotherGender == 'Female' ? 'background-color:#e7d6ba;' : 'background-color:#bdd7ee;' }" />
+                                </a>
+                            </li>
+                        </ul>
+
+                            <div class="slds-text-align_center">
+                                <lightning:icon iconName="utility:world" size="xx-small" />
+                                <span style="font-size: 0.6rem;" >{!v.family.clientFatherPrimaryResidence}</span>
+                            </div>
+
+                    </lightning:tile>
+                    <div style="height: 3%;" class="slds-text-align_center">
+                        <span class="slds-border_left"> </span>
+                    </div>
+                </aura:if>
+            </div>
+
+            <div class="slds-col slds-size_2-of-12" style="margin-top: 2%;">
+                    <h2 class="slds-text-heading_medium"> 
+                        <a href="{!v.family.householdLink}" title="{!v.family.householdName}">
+                            <span> {!v.family.householdName}</span>
+                        </a>
+                    </h2>
+                    <h3 class="slds-text-heading_small">
+                        {!v.family.clientPrimaryResidence}
+                    </h3>
+            </div>
+
+            <div class="slds-col slds-size_2-of-12">
+                <aura:if isTrue="{! !empty(v.family.spouseLineageLink)}">
+                    <lightning:tile label="" class="slds-box custom-tile">
+                        <div class="slds-text-align_center">
+                            <lightning:icon iconName="utility:agent_home" size="xx-small" class="slds-m-right_xx-small" />
+                            <a href="{!v.family.spouseLineageLink}" title="{!v.family.spouseLineageName}">
+                                <span style="font-size: 0.6rem;"> {!v.family.spouseLineageName}</span>
+                            </a>
+                        </div>
+                        <ul class="slds-list_vertical slds-has-dividers_right">
+                            <li class="">
+                                <a href="{!v.family.spouseFatherLink}" title="{!v.family.spouseFatherName}">
+                                    <lightning:badge label="{!v.family.spouseFatherName}" class="customBadge" iconName="utility:success" style="{! v.family.spouseFatherGender == 'Female' ? 'background-color:#e7d6ba;' : 'background-color:#bdd7ee;' }" />
+                                </a>
+                            </li>
+                            <li class="">
+                                <a href="{!v.family.spouseMotherLink}" title="{!v.family.spouseMotherName}">
+                                    <lightning:badge label="{!v.family.spouseMotherName}" class="customBadge" iconName="utility:success" style="{! v.family.spouseMotherGender == 'Female' ? 'background-color:#e7d6ba;' : 'background-color:#bdd7ee;' }" />
+                                </a>
+                            </li>
+                        </ul>
+        
+                        <div class="slds-text-align_center">
+                            <lightning:icon iconName="utility:world" size="xx-small" />
+                            <span style="font-size: 0.6rem;"> {!v.family.spouseFatherPrimaryResidence}</span>
+                        </div>
+                    </lightning:tile>
+                    <div style="height: 3%;" class="slds-text-align_center">
+                        <span class="slds-border_left"> </span>
+                    </div>
+                </aura:if>
+            </div>
+
+
+            <div class="slds-col slds-size_3-of-12" style="font-size: 0.9rem;">
+                <span style='float:right;'>
+                    <lightning:buttonIcon class="icon-button-class" iconName="utility:new_window" onclick="{!c.expand}" disabled="{!!v.showExpandButton}"
+                                          alternativeText="Expand" variant="brand" />
+                </span>
+                <ul class="slds-p-left_x-large"  style='float:left;'>
+                    <li>
+                        Children:&nbsp;{!v.family.totalChildren} 
+                    </li>
+                    <li>
+                        Married Children:&nbsp;{!v.family.totalMarriedChildren}
+                    </li>
+                    <li>
+                        Grandchildren:&nbsp;{!v.family.totalGrandChildren}
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_4-of-12"></div>
+            <div class="slds-col slds-size_4-of-12 slds-border_top"></div>
+            <div class="slds-col slds-size_4-of-12"></div>
+        </div>
+
+        <div class="slds-grid slds-gutters slds-p-right_xx-small slds-p-left_xx-small">
+            <div class="slds-col slds-size_4-of-12"></div>
+            <div class="slds-col slds-size_2-of-12">
+                <div class="slds-text-align_center">
+                    <span class="slds-border_left"> </span>
+                </div>
+
+                <lightning:tile class="slds-box slds-text-align_center clientBadge ">
+                    <!-- <p class="slds-truncate slds-p-around_xx-small" title="Client">clientName</p> -->
+
+                    <a href="{!v.family.clientLink}" title="{!v.family.clientName}">
+                        <lightning:badge label="{!v.family.clientName}" iconName="utility:success" style="{! v.family.clientGender == 'Female' ? 'background-color:#e7d6ba;width:100%' : 'background-color:#bdd7ee;width:100%'}" />
+                    </a>
+                </lightning:tile>
+                <div class="slds-text-align_center">
+                    <span class="slds-border_left"> </span>
+
+                </div>
+            </div>
+            <span class="slds-p-top_x-large">
+                <c:AddChildToHousholdWrapper householdId="{!v.family.householdId}" recordId="{!v.recordId}"/>
+            </span>
+
+            <!-- <div class="slds-col slds-size_1-of-12"></div> -->
+
+            <div class="slds-col slds-size_2-of-12">
+                <div class="slds-text-align_center">
+                    <span class="slds-border_left"> </span>
+                </div>
+            <lightning:tile class="slds-box slds-text-align_center clientBadge ">
+                <a href="{!v.family.spouseLink}" title="{!v.family.spouseName}">
+                    <lightning:badge label="{!v.family.spouseName}" iconName="utility:success" style="{! v.family.spouseGender == 'Female' ? 'background-color:#e7d6ba;width:100%' : 'background-color:#bdd7ee;width:100%'}" />
+                </a>
+            </lightning:tile>
+
+            <div class="slds-text-align_center">
+                <span class="slds-border_left"> </span>
+            </div>
+            </div>
+
+            <div class="slds-col slds-size_4-of-12"></div>
+        </div>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_12-of-12 slds-border_top"></div>
+        </div>
+
+       <aura:if isTrue="{!v.family.children.length > 6}">
+        <div class="slds-float_right">
+            <lightning:buttonIcon iconName="utility:chevronleft" variant="bare" onclick="{! c.scrollLeft }" />
+            <lightning:buttonIcon iconName="utility:chevronright" variant="bare" onclick="{! c.scrollRight }" />
+        </div>
+       </aura:if>
+
+
+        <div id="childLayout" class="slds-grid slds-gutters slds-p-right_xx-small slds-p-left_xx-small child-layout" style="font-size: 0.6rem;">
+            <lightning:layout  multipleRows="true" verticalAlign="stretch" class="sub-child-layout" >
+                <aura:iteration items="{!v.family.children}" var="child" indexVar="index">
+                    <div class="slds-col">
+                        <div class="slds-text-align_center">
+                            <span class="slds-border_left"> </span>
+                        </div>
+                        <lightning:tile label="" href="{!child.childLink}" class="slds-box custom-tile">
+                            <aura:if isTrue="{! ! empty(child.householdLink)}" >
+                                <span class="slds-float_right" >
+
+                                    <c:AddChildToHousholdWrapper recordId="{!v.recordId}" householdId="{!child.householdId}"  />
+                                </span>
+                                <div class="slds-text-align_center">
+                                    <lightning:icon iconName="utility:agent_home" size="xx-small" class="slds-m-right_xx-small" />
+                                    <a href="{!child.householdLink}" title="{!child.householdName}">
+                                        <span style="font-size: 0.6rem;"> {!child.householdName}</span>
+                                    </a>
+                                </div>
+                            </aura:if>
+
+                            <ul class="slds-list_vertical slds-has-dividers_right">
+                                <li class="">
+                                    <a href="{!child.childLink}" title="{!child.childName}">
+                                        <lightning:badge label="{!child.childName}" class="customBadge" iconName="utility:success" style="{! child.childGender == 'Female' ? 'background-color:#e7d6ba;' : 'background-color:#bdd7ee;' }" />
+                                    </a>
+                                </li>
+                            <aura:if isTrue="{!child.childSpouseLink}" >
+                                <li class="">
+                                    <a href="{!child.childSpouseLink}" title="{!child.childSpouseName}">
+                                        <lightning:badge label="{!child.childSpouseName}" class="customBadge" iconName="utility:success" style="{! child.childSpouseGender == 'Female' ? 'background-color:#e7d6ba;' : 'background-color:#bdd7ee;'}" />
+                                    </a>
+                                </li>
+                            </aura:if>
+                            </ul>
+                            <aura:if isTrue="{!child.childPrimaryResidence}">
+                                <div class="slds-text-align_center">
+                                    <lightning:icon iconName="utility:world" size="xx-small" />
+                                    <span style="font-size: 0.6rem;" title="Child"> {!child.childPrimaryResidence}</span>
+                                </div>
+                            </aura:if>
+                        </lightning:tile>
+                        <aura:if isTrue="{!not(empty(child.grandchildren))}">
+
+                            <aura:iteration items="{!child.grandchildren}" var="gc" indexVar="index">
+
+                                <div class="slds-text-align_center">
+                                    <span class="slds-border_left"> </span>
+                                </div>
+                            
+                                <lightning:tile label="" class="slds-box custom-tile">
+                                    <!-- <div class="slds-text-align_center">
+                                        <lightning:icon iconName="utility:home" size="xx-small" class="slds-m-right_xx-small" />
+                                        <a href="{!v.family.spouseLineageLink}" title="{!v.family.spouseLineageName}">
+                                            <span style="font-size: 0.6rem;"> {!v.family.spouseLineageName}</span>
+                                        </a>
+                                    </div> -->
+                                    <ul class="slds-list_vertical slds-has-dividers_right">
+                                        <li class="">
+                                            <a href="{!gc.grandchildLink}" title="{!gc.name}">
+                                                <lightning:badge label="{!gc.name}" class="customBadge" iconName="utility:success" style="{! gc.grandchildGender == 'Female' ? 'background-color:#e7d6ba;' : 'background-color:#bdd7ee;' }" />
+                                            </a>
+                                        </li>
+                                        <!-- <li class="">
+                                            <a href="{!v.family.spouseMotherLink}" title="{!v.family.spouseMotherName}">
+                                                <lightning:badge label="{!v.family.spouseMotherName}" class="customBadge" iconName="utility:success" style="{! v.family.spouseMotherGender == 'Female' ? 'background-color:#e7d6ba;' : 'background-color:#bdd7ee;' }" />
+                                            </a>
+                                        </li> -->
+                                    </ul>
+                                
+                                    <aura:if isTrue="{!gc.grandchildPrimaryResidence}">
+                                        <div class="slds-text-align_center">
+                                            <lightning:icon iconName="utility:world" size="xx-small" />
+                                            <span style="font-size: 0.6rem;" title="Child"> {!gc.grandchildPrimaryResidence}</span>
+                                        </div>
+                                    </aura:if>
+
+                                </lightning:tile>
+                                
+                                
+                                <!-- <lightning:tile label="{!gc.name}" href="{!gc.grandchildLink}" class="slds-box slds-text-align_center custom-tile">
+                                    <p style="font-size: 0.6rem;" title="Child">{!gc.relationship}</p>
+                                </lightning:tile> -->
+                            </aura:iteration>
+                        </aura:if>
+                    </div>
+                </aura:iteration>
+            </lightning:layout>
+        </div>
+   
+   
+   
+        <aura:set attribute="else">
+            <div class="slds-text-heading_medium slds-text-align_center slds-p-top_large">
+            Family tree could not be shown.
+            </div>
+        </aura:set>
+    </aura:if>
+  
+    </div>
+
+
+</aura:component>
