@@ -1,0 +1,35 @@
+<aura:component >
+    
+    <aura:attribute name="clientDataWrapper" type="Object"/>
+    <aura:attribute name="salutationOptions" type="List"/>
+    <aura:attribute name="maritalStatusOptions" type="List"/>
+    <aura:attribute name="stateOptions" type="List"/>
+    <aura:attribute name="countryOptions" type="List"/>
+    <aura:attribute name="genderOptions" type="List"/>
+    
+    <aura:handler name="DeleteRowEvt" event="c:DeleteRowEvt" action="{!c.removeDeletedRow}"/>
+    
+    <div class="slds-text-heading_medium slds-text-align_center">
+        Children Information
+    </div>
+    <aura:iteration items="{!v.clientDataWrapper.children}" var="child" indexVar="index">
+        <c:childDetail 
+                       childInstance="{!child}"
+                       clientDataWrapper="{!v.clientDataWrapper}"
+                       salutationOptions="{!v.salutationOptions}"
+                       maritalStatusOptions="{!v.maritalStatusOptions}"
+                       stateOptions="{!v.stateOptions}"
+                       countryOptions="{!v.countryOptions}"
+                       rowIndex="{!index}" 
+                       genderOptions="{!v.genderOptions}"/>
+    </aura:iteration> 
+
+    <div class="{!v.clientDataWrapper.children.length == 0 ? 'slds-text-align_center slds-m-top_x-small' : 'slds-float_right slds-m-top_x-small'}">
+        <lightning:button 
+                          variant="brand" 
+                          label="Add Child" 
+                          iconName="utility:add" 
+                          iconPosition="left"
+                          onclick="{! c.addChild }"/>
+    </div>
+</aura:component>
