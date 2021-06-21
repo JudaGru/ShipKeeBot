@@ -1,0 +1,74 @@
+<aura:component controller="AssetController">
+    <aura:attribute name="ownershipTypeOptions" type="List" />
+    <aura:attribute name="ownerships" type="List" />
+    <aura:attribute name="accountRecordTypes" type="List" />
+    <aura:attribute name="recordId" type="string" />
+    <aura:attribute name="recordName" type="string" />
+    <aura:attribute name="clientId" type="string" />
+    <aura:attribute name="household" type="Account" />
+    <aura:attribute name="clientAdded" type="boolean" default="false" />
+    <aura:attribute name="spouseAdded" type="boolean" default="false" />
+    <aura:attribute name="householdAdded" type="boolean" default="false" />
+    <aura:attribute name="recordInfo" type="Object"/>
+
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:handler event="force:showToast" action="{!c.toastInfo}" />
+
+    <aura:handler name="change" value="{!v.ownerships}" action="{!c.handleOwnershipsChanged}" />
+    <aura:handler name="change" value="{!v.clientId}" action="{!c.reloadRecord}" />
+    <aura:handler name="DeleteRowEvt" event="c:DeleteRowEvt" action="{!c.removeDeletedRow}" />
+
+    <force:recordData aura:id="recordLoader" recordId="{!v.clientId}" fields="Name" targetFields="{!v.recordInfo}" />
+
+    <div class="slds-box" style="height: 55vh;">
+        <div class="slds-grid slds-gutters slds-p-around_x-small slds-m-bottom_small slds-border_bottom">            
+            <aura:if isTrue="{! !empty(v.household)}">
+                <div class="slds-col slds-size_3-of-12">
+                    <lightning:buttonIcon iconName="utility:add" variant="brand" onclick="{! c.addClient }" title="Add Client" disabled="{!v.clientAdded}" />
+                    &nbsp;{!v.household.Client__r.Name}
+                </div>
+                <div class="slds-col slds-size_3-of-12">
+                    <lightning:buttonIcon iconName="utility:add" variant="brand" onclick="{! c.addSpouse }" title="Add Spouse" disabled="{!v.spouseAdded}" />
+                    &nbsp;{!v.household.Spouse__r.Name}
+                </div>
+                <div class="slds-col slds-size_3-of-12">
+                    <lightning:buttonIcon iconName="utility:add" variant="brand" onclick="{! c.addHousehold }" title="Add Household" disabled="{!v.householdAdded}" />
+                    &nbsp;{!v.household.Name}
+                </div>
+                <aura:set attribute="else">
+                    <div class="slds-col slds-size_9-of-12">
+                        <lightning:buttonIcon iconName="utility:add" variant="brand" onclick="{! c.addClient }" title="Add Client" disabled="{!v.clientAdded}" />
+                        &nbsp;{!v.recordInfo.Name}
+                    </div>
+                </aura:set>
+            </aura:if>
+
+                <div class="slds-col slds-size_1-of-12 slds-text-align_right">
+                    <lightning:button variant="brand" label="Add" iconName="utility:add" iconPosition="left" onclick="{! c.addOwnership }" />
+                </div>
+                <div class="slds-col slds-size_1-of-12 slds-text-align_right">
+                    <lightning:buttonMenu alternativeText="Show menu"  iconName="utility:record_create" class="slds-m-left_large slds-button slds-button-brand"  onselect="{! c.newOwner }"  label="New">
+   
+                        <aura:iteration items="{!v.accountRecordTypes}" var="recType" indexVar="index">
+                        <lightning:menuItem value="{!recType.Id}" label="{!recType.Name}" />
+
+                        </aura:iteration>
+                    </lightning:buttonMenu>
+                    <!-- <lightning:button variant="brand" label="New" iconName="utility:record_create" iconPosition="left" onclick="{! c.newOwner }" class="slds-m-left_large"/> -->
+                </div>
+
+
+        </div>
+        <div style="overflow-y: auto; height: 90%;">
+            <aura:if isTrue="{! v.ownerships.length > 0}">
+                <aura:iteration items="{!v.ownerships}" var="ownership" indexVar="index">
+                    <c:ownershipDetail ownershipTypeOptions="{!v.ownershipTypeOptions}" ownerInstance="{!ownership}" rowIndex="{!index}" />
+                </aura:iteration>
+                <aura:set attribute="else">
+                    <div class="slds-text-heading_large slds-align_absolute-center slds-p-top_xx-large">Add Owners</div>
+                </aura:set>
+            </aura:if>
+        </div>
+    </div>
+</aura:component>
