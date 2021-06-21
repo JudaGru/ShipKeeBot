@@ -1,0 +1,38 @@
+<aura:component controller="AssetSummaryTableController" implements="force:hasRecordId,lightning:actionOverride,force:lightningQuickActionWithoutHeader,force:hasSObjectName,flexipage:availableForAllPageTypes,force:appHostable" access="global">
+
+    <aura:attribute name="tableColumns" type="List"/>
+    <aura:attribute name="tableFooter" type="List"/>
+    <aura:attribute name="tableData" type="Object"/>
+    <aura:attribute name="totalJoint" type="string"/>
+    <aura:attribute name="totalClient" type="string"/>
+    <aura:attribute name="totalSpouse" type="string"/>
+    <aura:attribute name="totalTotal" type="string"/>
+
+    <aura:attribute name="maxDepth" type="Integer" default="10"/>
+    <aura:attribute name="now" type="Object"/>
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <aura:handler name="TableHeaderEvent" event="c:TableHeaderEvent" action="{!c.doInit}"/>
+    <lightning:overlayLibrary aura:id="modal" />
+    
+    <div>        
+        <div>
+
+            <div class="slds-box slds-p-around_none slds-m-bottom_small">
+                <aura:if isTrue="{!not(empty(v.tableData))}">
+                    <div>
+                        <lightning:datatable class="slds-table_bordered slds-table_striped slds-table_col-bordered" aura:id="entitiesTable" keyField="Id" showRowNumberColumn="true" hideCheckboxColumn="true" columns="{!v.tableColumns}" data="{!v.tableData}"  sortedBy="{!v.sortBy}" sortedDirection="{!v.sortDirection}" onsort="{!c.handleSort}" onrowaction="{!c.handleRowAction}" />
+                        <lightning:datatable  class="slds-table_bordered slds-table_striped slds-table_col-bordered tableFooter" aura:id="entitiesTable" keyField="Id" showRowNumberColumn="true" hideCheckboxColumn="true" columns="{!v.tableFooter}" data="{!v.footerData}"  sortedBy="{!v.sortBy}" sortedDirection="{!v.sortDirection}" onsort="{!c.handleSort}" onrowaction="{!c.viewSummary}" />
+                    </div>
+
+                <aura:set attribute="else">
+                    <div class="slds-text-heading_large slds-text-align_center slds-p-top_large">
+                    No items to display
+                    </div>
+                </aura:set>
+                </aura:if>
+            </div>
+        </div>
+    </div> 
+</aura:component>
