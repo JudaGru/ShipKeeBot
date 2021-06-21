@@ -1,0 +1,129 @@
+<aura:component >
+    <aura:attribute name="clientDataWrapper" type="Object"/>
+    <aura:attribute name="childInstance" type="Object"/>
+    <aura:attribute name="salutationOptions" type="List"/>
+    <aura:attribute name="maritalStatusOptions" type="List"/>
+    <aura:attribute name="stateOptions" type="List"/>
+    <aura:attribute name="countryOptions" type="List"/>
+    <aura:attribute name="rowIndex" type="String"/>
+    <aura:attribute name="childNumber" type="String"/>
+    <aura:attribute name="grandchildNumber" type="integer" default="0"/>
+    <aura:attribute name="maritalStatus" type="String"/>
+    <aura:attribute name="lastName" type="String"/>
+    <aura:attribute name="genderOptions" type="List"/>
+    <aura:attribute name="activeSections" type="List" default="['childInfo']" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="c:MaritalStatusEvt" action="{!c.updateStatus}"/>
+    <aura:handler name="DeleteRowEvt" event="c:DeleteRowEvt" action="{!c.removeDeletedRow}"/>
+    
+    <aura:registerEvent name="DeleteRowEvt" type="c:DeleteRowEvt"/> 
+    
+    <lightning:accordion 
+                         allowMultipleSectionsOpen="true"
+                         activeSectionName="{! v.activeSections }">
+        <lightning:accordionSection name="childInfo" label="{!'Child # ' + add(v.rowIndex,1)}">
+            <table>
+                <tr class="">   
+                    <td class="">
+                        <c:personalInfo 
+                                        personalInfo="{!v.childInstance.husbandData}"
+                                        childInstance="{!v.childInstance}"
+                                        clientDataWrapper="{!v.clientDataWrapper}"
+                                        salutationOptions="{!v.salutationOptions}"
+                                        maritalStatusOptions="{!v.maritalStatusOptions}"
+                                        maritalStatus="{!v.maritalStatus}"
+                                        isChild="true"
+                                        genderOptions="{!v.genderOptions}"
+                                        />
+                    </td>     
+                    <td class="slds-border_left">
+                        <c:householdInfo 
+                                         householdData="{!v.childInstance.householdData}"
+                                         clientDataWrapper="{!v.clientDataWrapper}"
+                                         stateOptions="{!v.stateOptions}"
+                                         countryOptions="{!v.countryOptions}"
+                                         isChild="true"
+                                         />
+                    </td>     
+                    <td>
+                        <!-- <aura:if isTrue="{!and(not(empty(v.childInstance)),v.rowIndex != 0)}">                     -->
+                            <a onclick="{!c.removeRow}">
+                                <lightning:icon variant="error" iconName="utility:delete" class="slds-icon slds-icon_small" size="small" alternativeText="icon"/>
+                                <span class="slds-assistive-text">Delete Icon</span>
+                            </a>
+                        <!-- </aura:if> -->
+                    </td> 
+                </tr>
+                
+            </table>
+
+
+
+            <aura:if isTrue="{!v.maritalStatus=='Married'}">    
+                <div  class="slds-p-left_xx-large">
+                    <table>
+                        <tr class="slds-border_left">          
+                            <td>
+                                <c:personalInfo 
+                                                personalInfo="{!v.childInstance.wifeData}"
+                                                childInstance="{!v.childInstance}"
+                                                clientDataWrapper="{!v.clientDataWrapper}"
+                                                salutationOptions="{!v.salutationOptions}"
+                                                maritalStatusOptions="{!v.maritalStatusOptions}"
+                                                isChildSpouse="true"
+                                                />
+                            </td>            
+                          
+                        </tr>
+                        
+                    </table>
+                    <lightning:accordion allowMultipleSectionsOpen="true">
+                        <lightning:accordionSection name="grandchildInfo" label="Grandchidren">
+                            <div  class="slds-p-left_xx-large slds-border_left">
+                                <aura:iteration items="{!v.childInstance.children}" var="grandchild" indexVar="index">
+                                    <c:grandchildDetail 
+                                                        grandchildInstance="{!grandchild.husbandData}"
+                                                        rowIndex="{!grandchild.index}"
+                                                        clientDataWrapper="{!v.clientDataWrapper}"
+                                                        genderOptions="{!v.genderOptions}"
+                                                        childNumber="{! v.rowIndex}"
+                                                         />
+                                </aura:iteration> 
+                            </div>
+                            <div class="slds-m-top_x-small">
+                                <lightning:button 
+                                                  variant="brand" 
+                                                  label="Add Grandchild" 
+                                                  iconName="utility:add" 
+                                                  iconPosition="left"
+                                                  onclick="{! c.addGrandchild }"/>
+                            </div>
+                        </lightning:accordionSection>
+                    </lightning:accordion>
+                </div>
+            </aura:if>
+            <lightning:accordion allowMultipleSectionsOpen="true">
+                <lightning:accordionSection name="businessInfo" label="Business Info">
+                    <div  class="slds-p-left_xx-large slds-border_left">
+                        <c:businessInfo 
+
+                        clientDataWrapper="{!v.clientDataWrapper}"
+                        businessInfo="{!v.childInstance.husbandData}"
+                        stateOptions="{!v.stateOptions}"
+                        countryOptions="{!v.countryOptions}"
+                        isChild="true"
+                        />
+
+                    </div>
+
+                </lightning:accordionSection>
+            </lightning:accordion>
+
+            <div class="slds-border_bottom slds-m-top_x-small">
+            </div>
+        </lightning:accordionSection>
+    </lightning:accordion>
+    
+    
+</aura:component>
