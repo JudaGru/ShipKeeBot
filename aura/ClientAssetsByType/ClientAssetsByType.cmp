@@ -1,0 +1,162 @@
+<aura:component controller="ClientAssets" implements="force:hasRecordId,lightning:actionOverride,force:lightningQuickActionWithoutHeader,force:hasSObjectName,flexipage:availableForAllPageTypes,force:appHostable" access="global">
+
+    <aura:attribute name="artsAndCollectiblesColumns" type="List"/>
+    <aura:attribute name="artsAndCollectibles" type="Object"/>
+    <aura:attribute name="totalArtsAndCollectibles" type="decimal"/>
+    <aura:attribute name="showArtsAndCollectibles" type="boolean" default="true"/>
+
+    <aura:attribute name="lifeInsurancePoliciesColumns" type="List"/>
+    <aura:attribute name="lifeInsurancePolicies" type="Object"/>
+    <aura:attribute name="totalLifeInsurancePolicies" type="decimal"/>
+    <aura:attribute name="showLifeInsurancePolicies" type="boolean" default="true"/>
+
+    <aura:attribute name="bankAccountsColumns" type="List"/>
+    <aura:attribute name="bankAccounts" type="Object"/>
+    <aura:attribute name="totalBankAccounts" type="decimal"/>
+    <aura:attribute name="showBankAccounts" type="boolean" default="true"/>
+    
+
+    <aura:attribute name="loansPayableColumns" type="List"/>
+    <aura:attribute name="loansPayable" type="Object"/>
+    <aura:attribute name="totalLoansPayable" type="decimal"/>
+    <aura:attribute name="showLoansPayable" type="boolean" default="true"/>
+    
+    <aura:attribute name="loansReceivablesColumns" type="List"/>
+    <aura:attribute name="loansReceivables" type="Object"/>
+    <aura:attribute name="totalLoansReceivables" type="decimal"/>
+    <aura:attribute name="showLoansReceivables" type="boolean" default="true"/>
+
+    <aura:attribute name="investmentPropertiesColumns" type="List"/>
+    <aura:attribute name="investmentProperties" type="Object"/>
+    <aura:attribute name="totalInvestmentProperties" type="decimal"/>
+    <aura:attribute name="showInvestmentProperties" type="boolean" default="true"/>
+
+    <aura:attribute name="personalPropertiesColumns" type="List"/>
+    <aura:attribute name="personalProperties" type="Object"/>
+    <aura:attribute name="totalPersonalProperties" type="decimal"/>
+    <aura:attribute name="showPersonalProperties" type="boolean" default="true"/>
+
+
+    <aura:attribute name="entitiesColumns" type="List"/>
+    <aura:attribute name="entities" type="Object"/>
+    <aura:attribute name="totalEntities" type="decimal"/>
+    <aura:attribute name="showEntities" type="boolean" default="true"/>
+
+    <aura:attribute name="maxDepth" type="Integer" default="10"/>
+    <aura:attribute name="now" type="Object"/>
+
+
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+
+    <aura:handler name="TableHeaderEvent" event="c:TableHeaderEvent" action="{!c.doInit}"/>
+
+    
+    <div>        
+        <div>
+            <!-- Arts and Collectables -->
+            <aura:if isTrue="{!v.showArtsAndCollectibles}">
+                <div class="slds-box slds-p-around_none slds-m-bottom_small">
+                    <c:TableHeader headerTitle="Valuables" recordCount="{!v.artsAndCollectibles.length}" iconName="custom:custom43"  now="{!v.now}" totalValue="{!v.totalArtsAndCollectibles}"/>
+                    <aura:if isTrue="{!not(empty(v.artsAndCollectibles))}">
+                        <div>
+                            <lightning:datatable aura:id="artsAndCollectiblesTable" keyField="Id" showRowNumberColumn="true" hideCheckboxColumn="true" columns="{!v.artsAndCollectiblesColumns}" data="{!v.artsAndCollectibles}" sortedBy="{!v.sortBy}" sortedDirection="{!v.sortDirection}" onsort="{!c.handleSort}" onrowaction="{!c.viewSummary}" />
+                        </div>
+                    </aura:if>
+                </div>
+            </aura:if>
+
+
+            <!-- Life Insurance Policies -->
+            <aura:if isTrue="{!v.showLifeInsurancePolicies}">
+
+                <div class="slds-box slds-p-around_none slds-m-bottom_small">
+                    <c:TableHeader headerTitle="Life Insurance Policies" recordCount="{!v.lifeInsurancePolicies.length}" iconName="custom:custom16" now="{!v.now}" totalValue="{!v.totalLifeInsurancePolicies}"/>
+                    <aura:if isTrue="{!not(empty(v.lifeInsurancePolicies))}">
+                        <div>
+                            <lightning:datatable aura:id="lifeInsurancePoliciesTable" keyField="Id" showRowNumberColumn="true" hideCheckboxColumn="true" columns="{!v.lifeInsurancePoliciesColumns}" data="{!v.lifeInsurancePolicies}"  sortedBy="{!v.sortBy}" sortedDirection="{!v.sortDirection}" onsort="{!c.handleSort}" onrowaction="{!c.viewSummary}" />
+                        </div>
+                    </aura:if>
+                </div>
+            </aura:if>
+
+            
+            <!-- Bank Accounts -->
+            <aura:if isTrue="{!v.showBankAccounts}">
+
+                <div class="slds-box slds-p-around_none slds-m-bottom_small">
+                    <c:TableHeader headerTitle="Bank Accounts" recordCount="{!v.bankAccounts.length}" iconName="custom:custom16" now="{!v.now}" totalValue="{!v.totalBankAccounts}"/>
+                    <aura:if isTrue="{!not(empty(v.bankAccounts))}">
+                        <div>
+                            <lightning:datatable aura:id="bankAccountsTable" keyField="Id" showRowNumberColumn="true" hideCheckboxColumn="true" columns="{!v.bankAccountsColumns}" data="{!v.bankAccounts}"  sortedBy="{!v.sortBy}" sortedDirection="{!v.sortDirection}" onsort="{!c.handleSort}" onrowaction="{!c.viewSummary}" />
+                        </div>
+                    </aura:if>
+                </div>
+            </aura:if>
+
+            <!-- Loans -->
+            <aura:if isTrue="{!v.showLoansReceivables}">
+
+                <div class="slds-box slds-p-around_none slds-m-bottom_small">
+                    <c:TableHeader headerTitle="Loans Receivables" recordCount="{!v.loansReceivables.length}" iconName="custom:custom16" now="{!v.now}" totalValue="{!v.totalLoansReceivables}"/>
+                    <aura:if isTrue="{!not(empty(v.loansReceivables))}">
+                        <div>
+                            <lightning:datatable aura:id="loansTable" keyField="Id" showRowNumberColumn="true" hideCheckboxColumn="true" columns="{!v.loansReceivablesColumns}" data="{!v.loansReceivables}"  sortedBy="{!v.sortBy}" sortedDirection="{!v.sortDirection}" onsort="{!c.handleSort}" onrowaction="{!c.viewSummary}" />
+                        </div>
+                    </aura:if>
+                </div>
+            </aura:if>
+
+            <aura:if isTrue="{!v.showLoansPayable}">
+
+                <div class="slds-box slds-p-around_none slds-m-bottom_small">
+                    <c:TableHeader headerTitle="Loans Payable" recordCount="{!v.loansPayable.length}" iconName="custom:custom16" now="{!v.now}" totalValue="{!v.totalLoansPayable}"/>
+                    <aura:if isTrue="{!not(empty(v.loansPayable))}">
+                        <div>
+                            <lightning:datatable aura:id="loansPayableTable" keyField="Id" showRowNumberColumn="true" hideCheckboxColumn="true" columns="{!v.loansPayableColumns}" data="{!v.loansPayable}"  sortedBy="{!v.sortBy}" sortedDirection="{!v.sortDirection}" onsort="{!c.handleSort}" onrowaction="{!c.viewSummary}" />
+                        </div>
+                    </aura:if>
+                </div>
+            </aura:if>
+
+
+
+            <!-- Investment Properties -->
+            <aura:if isTrue="{!v.showInvestmentProperties}">
+
+            <div class="slds-box slds-p-around_none slds-m-bottom_small">
+                <c:TableHeader headerTitle="Investment Properties" recordCount="{!v.investmentProperties.length}" iconName="custom:custom16" now="{!v.now}" totalValue="{!v.totalInvestmentProperties}"/>
+                <aura:if isTrue="{!not(empty(v.investmentProperties))}">
+                    <div>
+                        <lightning:datatable aura:id="propertiesTable" keyField="Id" showRowNumberColumn="true" hideCheckboxColumn="true" columns="{!v.investmentPropertiesColumns}" data="{!v.investmentProperties}"  sortedBy="{!v.sortBy}" sortedDirection="{!v.sortDirection}" onsort="{!c.handleSort}" onrowaction="{!c.viewSummary}" />
+                    </div>
+                </aura:if>
+            </div>
+            </aura:if>
+
+            <!-- Personal Properties -->
+            <aura:if isTrue="{!v.showPersonalProperties}">
+
+                <div class="slds-box slds-p-around_none slds-m-bottom_small">
+                    <c:TableHeader headerTitle="Personal Properties" recordCount="{!v.personalProperties.length}" iconName="custom:custom16" now="{!v.now}" totalValue="{!v.totalPersonalProperties}"/>
+                    <aura:if isTrue="{!not(empty(v.personalProperties))}">
+                        <div>
+                            <lightning:datatable aura:id="propertiesTable" keyField="Id" showRowNumberColumn="true" hideCheckboxColumn="true" columns="{!v.personalPropertiesColumns}" data="{!v.personalProperties}"  sortedBy="{!v.sortBy}" sortedDirection="{!v.sortDirection}" onsort="{!c.handleSort}" onrowaction="{!c.viewSummary}" />
+                        </div>
+                    </aura:if>
+                </div>
+                </aura:if>
+
+            <!-- Entities -->
+            <aura:if isTrue="{!v.showEntities}">
+                <div class="slds-box slds-p-around_none slds-m-bottom_small">
+                    <c:TableHeader headerTitle="Entities" recordCount="{!v.entities.length}" iconName="standard:account" now="{!v.now}" totalValue="{!v.totalEntities}"/>
+                    <aura:if isTrue="{!not(empty(v.entities))}">
+                        <div>
+                            <lightning:datatable aura:id="entitiesTable" keyField="Id" showRowNumberColumn="true" hideCheckboxColumn="true" columns="{!v.entitiesColumns}" data="{!v.entities}"  sortedBy="{!v.sortBy}" sortedDirection="{!v.sortDirection}" onsort="{!c.handleSort}" onrowaction="{!c.viewSummary}" />
+                        </div>
+                    </aura:if>
+                </div>
+            </aura:if>
+        </div>
+    </div> 
+</aura:component>
