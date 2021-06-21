@@ -1,0 +1,226 @@
+<!-- 
+            <<<<<<<<<<<<<<<<<<<<<<IntakeFormModal>>>>>>>>>>>>>>>>>>>>>>>
+               /                         |                          \
+IntakeFormClientInfo           IntakeFormBusinessInfo      IntakeFormChildrenInfo
+        |                                |                           |
+personalInfo(husband)          businessInfo(husband)           childDetail (ITERATION)
+personalInfo(wife)             businessInfo(wife)                    | 
+householdInfo                  advisorDetails (ITERATION)      personalInfo(husband) 
+                                        |                      householdInfo 
+                                  existingAdvisor              personalInfo(wife) 
+                                                               grandchildDetail (ITERATION) 
+                                                            
+-->
+
+
+<aura:component controller="IntakeFormController" 
+                implements="force:hasRecordId,lightning:actionOverride,force:lightningQuickActionWithoutHeader,flexipage:availableForAllPageTypes"
+                access="global">
+    
+    <aura:attribute name="isOpen" type="boolean" default="false"/>
+    <aura:attribute name="currentStep" type="string" default="1"/>
+    <aura:attribute name="recordId" type="string"/>
+    <aura:attribute name="buttonLabel" type="string"/>
+    <aura:attribute name="showSaveForLater" type="Boolean" default="true"/>
+    <aura:attribute name="showSaveAnyway" type="Boolean" default="false"/>
+    <aura:attribute name="showWarnings" type="Boolean" default="false"/>
+    <aura:attribute name="editMode" type="Boolean" default="false"/>
+    <aura:attribute name="loading" type="Boolean" default="false"/>
+    <aura:attribute name="clientDataWrapper" type="Object"/>
+    <aura:attribute name="salutationOptions" type="List"/>
+    <aura:attribute name="maritalStatusOptions" type="List"/>
+    <aura:attribute name="stateOptions" type="List"/>
+    <aura:attribute name="countryOptions" type="List"/>
+    <aura:attribute name="accountTypeOptions" type="List"/>
+    <aura:attribute name="genderOptions" type="List"/>
+    <aura:attribute name="warnings" type="List"/>
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:handler event="c:CloseModalEvt" action="{!c.saveForm}"/>
+
+
+    <!-- <aura:handler name="change" value="{!v.clientDataWrapper}" action="{!c.clientDataWrapperChange}"/> -->
+    
+    <lightning:overlayLibrary aura:id="saveFormName" />
+
+    <div class="slds-m-around_xx-small">
+        
+        
+        <lightning:button variant="brand"
+                          class="intake-form-button"
+                          label="{!v.buttonLabel}"
+                          title="New Intake Form"
+                          onclick="{! c.openModel }" />
+        <aura:if isTrue="{!v.isOpen}">
+            
+            <!--###### MODAL BOX Start######--> 
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                
+                <aura:if isTrue="{! v.loading }">
+                    <lightning:spinner alternativeText="Loading" size="medium"/>
+                </aura:if>
+                
+                
+                <div class="slds-modal__container intake-modal ">
+                    <!-- ###### MODAL BOX HEADER Start ######-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">Client Intake Form</h2>
+
+                        <lightning:button variant="neutral" 
+                        class="slds-float_right"
+                        label="Save"
+                        title="Save"
+                        onclick="{! c.validateSave }"
+                        iconName="utility:save" 
+                        iconPosition="left"/>
+
+                        <aura:if isTrue="{!v.showSaveForLater}">
+                            <lightning:button variant="brand" 
+                                              class="slds-float_right slds-m-right_x-small"
+                                              label="Save for Later"
+                                              title="Save for Later"
+                                              onclick="{! c.saveForLater }"
+                                              iconName="utility:save" 
+                                              iconPosition="left"/>
+                        </aura:if>
+
+
+                    </header>
+                    <!--###### MODAL BOX BODY Part Start######-->
+
+                    <div class="slds-modal__content slds-p-around_medium slds-theme_shade" style="min-height: 200px;" id="modal-content-id-1">
+
+                        <div class="slds-grid slds-gutters">
+                            <div class="{! v.showWarnings == true ? 'slds-col slds-size_9-of-12' : 'slds-col slds-size_12-of-12'}">
+                               
+                                <aura:if isTrue="{!v.warnings.length > 0}"> 
+                                <div class="slds-float_right">
+                                    <lightning:buttonIcon iconName="{! v.showWarnings == true ? 'utility:arrow_right' : 'utility:arrow_left'}" onclick="{! c.handleToggleClick }"  alternativeText="Show/Hide Warnings" />
+                                </div>
+                                </aura:if>
+                            
+                                <aura:if isTrue="{!v.currentStep == '1'}"> 
+                                    <c:IntakeFormClientInfo clientDataWrapper="{!v.clientDataWrapper}"
+                                                            salutationOptions="{!v.salutationOptions}"
+                                                            maritalStatusOptions="{!v.maritalStatusOptions}"
+                                                            stateOptions="{!v.stateOptions}"
+                                                            countryOptions="{!v.countryOptions}"
+                                                            editMode="{!v.editMode}"/>
+                                </aura:if>
+                                <aura:if isTrue="{!v.currentStep == '2'}"> 
+                                    <c:IntakeFormBusinessInfo clientDataWrapper="{!v.clientDataWrapper}"
+                                                            salutationOptions="{!v.salutationOptions}"
+                                                            stateOptions="{!v.stateOptions}"
+                                                            countryOptions="{!v.countryOptions}"
+                                                            accountTypeOptions="{!v.accountTypeOptions}"/>
+                                </aura:if>
+                                <aura:if isTrue="{!v.currentStep == '3'}">
+                                    <c:IntakeFormChildrenInfo 
+                                                            clientDataWrapper="{!v.clientDataWrapper}"
+                                                            salutationOptions="{!v.salutationOptions}"
+                                                            maritalStatusOptions="{!v.maritalStatusOptions}"
+                                                            stateOptions="{!v.stateOptions}"
+                                                            countryOptions="{!v.countryOptions}"
+                                                            genderOptions="{!v.genderOptions}"/>
+                                </aura:if>
+                            </div>
+
+                            <aura:if isTrue="{!v.showWarnings}">
+                                <div class="slds-col slds-size_3-of-12 slds-border_left">
+                                    <div style="position: fixed;width: 23%;">
+
+    
+                                    <div class="slds-text-heading_small slds-text-align_center slds-p-bottom_medium slds-border_bottom">
+                                    <!-- <lightning:Icon iconName="utility:warning" size="xx-small"/> -->
+                                        Review Errors({!v.warnings.length})
+                                    <div class="slds-float_right">
+                                        <lightning:buttonIcon iconName="utility:refresh" onclick="{! c.validateSaveFromRefresh }"  alternativeText="Refresh" />
+                                    </div>
+                                    </div>
+                                    <ul class="slds-has-dividers_around-space">
+                                    <aura:iteration items="{!v.warnings}" var="warning">
+                                      
+                                        <li class="slds-item slds-notify slds-notify_alert slds-alert_error">
+                                            {!warning}
+                                        </li>
+    
+                                       
+                                    </aura:iteration>
+                                    </ul>
+        
+                                    <div class="slds-text-align_center">
+                                        <aura:if isTrue="{!v.showSaveAnyway}">
+                                            <lightning:button variant="neutral" 
+                                            class="slds-m-top_x-small"
+                                            label="Save Anyway"
+                                            title="Save Anyway"
+                                            onclick="{! c.finish }"
+                                            iconName="utility:save" 
+                                            iconPosition="left"/>
+                                            
+                                        </aura:if>
+                                        <aura:if isTrue="{! and(v.showSaveAnyway,v.showSaveForLater)}">
+                                           <span style="vertical-align: middle;">
+                                                    or
+                                           </span>  
+                                        </aura:if>
+                                        
+                                        <aura:if isTrue="{!v.showSaveForLater}">
+                                            <lightning:button variant="brand" 
+                                            class="slds-m-top_x-small"
+                                            label="Save for Later"
+                                            title="Save for Later"
+                                            onclick="{! c.saveForLater }"
+                                            iconName="utility:save" 
+                                            iconPosition="left"/>
+                                        </aura:if>
+                                        
+                                    </div>
+                                </div>
+                                </div>
+                            </aura:if>
+                            
+                        </div>
+
+                    </div>
+                    <!--###### MODAL BOX FOOTER Part Start ######-->
+                    <footer class="slds-modal__footer slds-modal__footer_directional">
+                        <lightning:progressIndicator currentStep="{!v.currentStep}" type="base">
+                            <lightning:progressStep label="Personal Information" value="1" onclick="{!c.selectFromHeaderStep1}"/>
+                            <lightning:progressStep label="Business Information" value="2" onclick="{!c.selectFromHeaderStep2}"/>
+                            <lightning:progressStep label="Family Information" value="3" onclick="{!c.selectFromHeaderStep3}"/>
+                        </lightning:progressIndicator>
+                        <lightning:button disabled="{!v.currentStep != '1' ? '' : 'disabled'}"
+                                          variant="neutral" 
+                                          label="Back"
+                                          title="Back"
+                                          class="slds-float_left"
+                                          onclick="{! c.moveBack }"/>
+                        <aura:if isTrue="{!v.currentStep != '3'}">
+                            <lightning:button variant="brand" 
+                                              label="Next"
+                                              title="Next"
+                                              onclick="{! c.moveNext }"/>
+                        </aura:if>
+                        <aura:if isTrue="{!v.currentStep == '3'}"> 
+                            <lightning:button variant="brand" 
+                                              label="Next"
+                                              title="Next"
+                                              disabled="true"/>  
+                        </aura:if>
+                        
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+            <!--###### MODAL BOX Part END Here ######-->
+            
+        </aura:if>
+    </div>
+
+</aura:component>
