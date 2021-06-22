@@ -1,5 +1,5 @@
 ({
-    helperMethod : function() {
 
-    }
+// Your renderer method overrides go here
+
 })
